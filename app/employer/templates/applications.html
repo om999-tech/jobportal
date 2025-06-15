@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }} - Applications{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+  <!-- Job Details -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title">{{ job.title }}</h3>
+      <p class="card-text">{{ job.description }}</p>
+      <p><strong>Posted at:</strong> {{ job.posted_at.strftime('%Y-%m-%d %H:%M') }}</p>
+      {% if current_user.role in ['employer', 'admin'] %}
+      <p><strong>Total Applications:</strong> {{ applications|length }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if current_user.role == 'employer' %}
+  <h4>Applications</h4>
+  {% if applications %}
+    <div class="row">
+      {% for app in applications %}
+        <div class="col-md-6">
+          <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+              <h5>{{ app.jobseeker.full_name }}</h5>
+              <p>Status: <strong>{{ app.status }}</strong></p>
+              <p>Applied at: {{ app.applied_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">No applications yet.</div>
+  {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-2">
+  <h2 class="mb-4 text-center">Jobseeker List</h2>
+
+  <table class="table table-striped table-bordered shadow-sm bg-white">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>User Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for jobseeker in jobseekers %}
+      <tr>
+        <td>{{ jobseeker.id }}</td>
+        <td>{{ jobseeker.full_name }}</td>
+        <td>{{ jobseeker.user.email if jobseeker.user else 'No Email' }}</td>
+        <td>
+          <!-- Edit Button -->
+          <button class="btn btn-sm btn-primary me-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editModal"
+                  onclick="populateEditModal('{{ jobseeker.id }}', '{{ jobseeker.full_name }}', '{{ jobseeker.user.email}}')">
+                  <i class="fas fa-edit"></i>
+          </button>
+
+          <!-- Delete Button -->
+          <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                  onclick="setDeleteId({{ jobseeker.id }}, '{{ jobseeker.full_name }}')">
+                  <i class="fas fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ url_for('admin_user.update_jobseeker') }}" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Jobseeker</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="id" id="jobseekerId">
+        
+        <div class="mb-3">
+          <label for="jobseekerName" class="form-label">Full Name</label>
+          <input type="text" class="form-control" name="full_name" id="jobseekerName" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="jobseekerEmail" class="form-label">User Email</label>
+          <input type="email" class="form-control" id="jobseekerEmail" readonly />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Update</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" id="deleteForm" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong id="deleteJobseekerName"></strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function populateEditModal(id, name, email) {
+    document.getElementById('jobseekerId').value = id;
+    document.getElementById('jobseekerName').value = name;
+    document.getElementById('jobseekerEmail').value = email;
+  }
+
+  function setDeleteId(id, name) {
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = `/delete_jobseeker/${id}`;  // Adjust URL to your Flask route
+    document.getElementById('deleteJobseekerName').textContent = name;
+  }
+</script>
+{% endblock %}
