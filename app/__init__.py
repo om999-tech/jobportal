@@ -7,7 +7,6 @@ from flask_admin import Admin
 from flask_login import LoginManager
 from app.models import User
 from app.models import *
-# from app import admin_view
 from flask_admin.contrib.sqla import ModelView
 from app.auth.views import auth_bp
 from app.admin_user.views import adminuser_bp
@@ -27,14 +26,9 @@ def create_app():
     # bcrypt.init_app(app)
     migrate.init_app(app, db)
     
-      # Import and initialize admin
+    # Import and initialize admin
     from app.admin_view import init_admin
     init_admin(app)
-
-    # admin.init_app(app)
-    # admin.add_view(ModelView(User, db.session))
-    # admin.add_view(ModelView(Job, db.session))
-    # admin.add_view(ModelView(Application, db.session))
 
     # Initialize login manager
     login_manager = LoginManager()
@@ -46,7 +40,6 @@ def create_app():
         return User.query.get(int(user_id))
 
     # Register blueprints
-
     app.register_blueprint(auth_bp)
     app.register_blueprint(adminuser_bp)
     app.register_blueprint(employer_bp)

@@ -12,15 +12,12 @@ def dashboard():
     jobs = Job.query.order_by(Job.posted_at.desc()).all()
     return render_template('jobseeker_dashboard.html', jobs=jobs)
 
-
 @jobseeker_bp.route('/jobs')
 @login_required
 def all_jobs():
     jobs = Job.query.all()
     applied_job_ids = {a.job_id for a in current_user.jobseeker.applications}
     return render_template('job_board.html', jobs=jobs, applied_job_ids=applied_job_ids)
-
-
 
 @jobseeker_bp.route('/apply/<int:job_id>',methods=['GET', 'POST'])
 @login_required
@@ -32,8 +29,6 @@ def apply_job(job_id):
     db.session.add(application)
     db.session.commit()
     return redirect(url_for('admin_user.dashboard'))
-
-
 
 @jobseeker_bp.route('/my-applications')
 @login_required

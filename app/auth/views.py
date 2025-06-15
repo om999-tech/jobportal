@@ -49,19 +49,11 @@ def register():
 def login():
     if request.method == 'POST':
         email = request.form['email']
-        print('email>>>',email)
         password = request.form['password']
-        print('pasowrd working.....')
         user = User.query.filter_by(email=email).first() 
-        print('user working')
-        print('user>>>>>>',user) # This will now work correctly
         if user and check_password_hash(user.password, password):
             print('if block.........')
             login_user(user) 
-            print('userrol', user.role)   
-            # session['user_id'] = user.id
-            # session['role'] = user.role
-            # return redirect(url_for(f"{user.role}.dashboard"))
             return redirect(url_for('admin_user.dashboard'))
     return render_template('login.html')
 

@@ -10,8 +10,6 @@ adminuser_bp = Blueprint('admin_user', __name__, template_folder='templates')
 @adminuser_bp.route('/dashboard')
 @login_required
 def dashboard():
-    print("current_user>>>>",current_user.role)
-
     job_count = Job.query.count()
     all_job = Job.query.all()
     applied_job_ids = None
